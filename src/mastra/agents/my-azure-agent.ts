@@ -1,17 +1,19 @@
 import { createAzure } from '@ai-sdk/azure';
-import { Agent } from '@mastra/core/agent';
-import { sendEmailTool } from '../tools/gmail-api-tool';
+import { Agent } from '@mastra/core';
 
 const azure = createAzure({
-  resourceName: 'talentino-openai-fra', 
-  apiKey: process.env.AZURE_OPENAI_KEY, 
+  resourceName: 'talentino-openai-fra',
+  apiKey: process.env.AZURE_OPENAI_KEY,
 });
 
 const azureModel = azure('gpt-4o');
 
-export const myAzureAgent = new Agent({
-  name: 'My Test Agent',
-  instructions: 'You are a helpful assistant powered by Azure OpenAI GPT-4o. You can send emails using the send-email tool.',
-  model: azureModel,
-  tools: { sendEmail: sendEmailTool },
-});
+export function createMyAzureAgent(tools: Record<string, any>) {
+  return new Agent({
+    name: 'My Test Agent',
+          instructions:
+        'You are a Missing Information Detection Agent. Use the detect-missing-info tool to automatically extract contacts with missing information and identify what specific information is missing. You can also send follow-up emails when needed.',
+    model: azureModel,
+    tools,
+  });
+}
